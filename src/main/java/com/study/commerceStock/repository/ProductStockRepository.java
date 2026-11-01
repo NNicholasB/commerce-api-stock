@@ -5,5 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface ProductStockRepository extends JpaRepository<UUID, ProductStock> {
+public interface ProductStockRepository extends JpaRepository<ProductStock,UUID> {
+    ProductStock findByProductId(UUID productId);
+
+    boolean existsByProductId(UUID uuid);
 }
