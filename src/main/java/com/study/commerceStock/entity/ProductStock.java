@@ -22,4 +22,10 @@ public class ProductStock {
     private UUID productId;
 
     private Integer quantity;
+
+    private Integer reservedQuantity;
+
+    public Integer getAvailableQuantity() {
+        return quantity - reservedQuantity;
+    }
 }
