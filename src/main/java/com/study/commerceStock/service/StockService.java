@@ -3,6 +3,7 @@ package com.study.commerceStock.service;
 import com.study.commerceStock.dto.OrderCreatedDTO;
 import com.study.commerceStock.dto.OrderItemDTO;
 import com.study.commerceStock.dto.ProductCreatedEventDTO;
+import com.study.commerceStock.dto.StockResultDTO;
 import com.study.commerceStock.entity.ProductStock;
 import com.study.commerceStock.publisher.StockPublisher;
 import com.study.commerceStock.repository.ProductStockRepository;
@@ -27,9 +28,13 @@ public class StockService {
                 ProductStock stock= stockRepository
                         .findByProductIdForUpdate(item.productId()).orElseThrow(()-> new EntityNotFoundException("Stock not found for product: "+item.productId()));
                 if (stock.getAvailableQuantity()<item.quantity()){
-                    throw new IllegalStateException("Insufficient stock for product: "+item.productId());
+                    StockResultDTO reject=new StockResultDTO(orderCreatedDTO.orderId(),"Insufficient stock for product");
+                    stockPublisher.publishStockReserved(reject);
+                    return;
                 }
                 stock.setReservedQuantity(stock.getReservedQuantity()-item.quantity());
+                StockResultDTO reserved=new StockResultDTO(orderCreatedDTO.orderId(),"Accepted");
+                stockPublisher.publishStockReserved(reserved);
 
             }
 
