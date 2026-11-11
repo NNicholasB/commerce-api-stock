@@ -16,14 +16,12 @@ public class StockPublisher {
     private static final String EXCHANGE="commerce.exchange";
 
     public void publishStockReserved(StockResultDTO result){
-        StockResultDTO event=new StockResultDTO(result.orderId(),"RESERVED");
 
-        rabbitTemplate.convertAndSend(EXCHANGE,"stock.reserved",event);
+        rabbitTemplate.convertAndSend(EXCHANGE,"stock.reserved",result);
     }
 
     public void publishStockReject(StockResultDTO result){
-        StockResultDTO event=new StockResultDTO(result.orderId(),"REJECT");
 
-        rabbitTemplate.convertAndSend(EXCHANGE,"stock.reject",event);
+        rabbitTemplate.convertAndSend(EXCHANGE,"stock.reject",result);
     }
 }
