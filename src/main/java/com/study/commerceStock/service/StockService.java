@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +29,12 @@ public class StockService {
                 ProductStock stock= stockRepository
                         .findByProductIdForUpdate(item.productId()).orElseThrow(()-> new EntityNotFoundException("Stock not found for product: "+item.productId()));
                 if (stock.getAvailableQuantity()<item.quantity()){
-                    StockResultDTO reject=new StockResultDTO(orderCreatedDTO.orderId(),"Insufficient stock for product");
+                    StockResultDTO reject=new StockResultDTO(UUID.randomUUID(),orderCreatedDTO.orderId(),"Insufficient stock for product");
                     stockPublisher.publishStockReserved(reject);
                     return;
                 }
                 stock.setReservedQuantity(stock.getReservedQuantity()-item.quantity());
-                StockResultDTO reserved=new StockResultDTO(orderCreatedDTO.orderId(),"Accepted");
+                StockResultDTO reserved=new StockResultDTO(UUID.randomUUID(),orderCreatedDTO.orderId(),"Accepted");
                 stockPublisher.publishStockReserved(reserved);
 
             }
